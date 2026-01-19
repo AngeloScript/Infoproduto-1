@@ -10,6 +10,7 @@ interface ResultPageProps {
 const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
   const [timeLeft, setTimeLeft] = useState(600);
   const [meterWidth, setMeterWidth] = useState(0);
+  // Link exato solicitado
   const [checkoutUrl, setCheckoutUrl] = useState("https://pay.cakto.com.br/dmha2ta_727694");
 
   useEffect(() => {
@@ -25,9 +26,13 @@ const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
     
     setTimeout(() => setMeterWidth(100), 500);
 
+    // Mantém os parâmetros de URL (UTMs) do Facebook/Ads se existirem
     const currentParams = window.location.search;
     if (currentParams) {
-        setCheckoutUrl(prev => `${prev}${currentParams.includes('?') ? '&' : '?'}${currentParams.substring(1)}`);
+        setCheckoutUrl(prev => {
+            const separator = prev.includes('?') ? '&' : '?';
+            return `${prev}${separator}${currentParams.substring(1)}`;
+        });
     }
   }, []);
 
@@ -134,9 +139,11 @@ const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
                     </div>
                 </div>
 
-                {/* CTA Button */}
+                {/* CTA Button - LINK CONFIGURADO AQUI */}
                 <a
                   href={checkoutUrl}
+                  target="_self"
+                  rel="noopener noreferrer"
                   className="group relative w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-black text-lg py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(34,197,94,0.39)] transform transition hover:-translate-y-1 active:scale-95 duration-200 overflow-hidden flex items-center justify-center decoration-none mb-1"
                 >
                     <div className="absolute top-0 left-0 w-full h-full bg-white/20 animate-stripes opacity-30"></div>
