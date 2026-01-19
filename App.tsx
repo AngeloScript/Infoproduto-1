@@ -108,113 +108,60 @@ const App: React.FC = () => {
   }, [phase, answers]);
 
   return (
-    <div className="min-h-screen bg-[#f0f4f8] font-sans text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-[#f0f4f8] font-sans text-gray-900 flex flex-col overflow-hidden">
       
-      {/* Header with "Live" status */}
-      <header className="bg-white shadow-sm py-2 sticky top-0 z-20 border-b border-gray-200">
-        <div className="container mx-auto px-4 flex justify-between items-center max-w-lg">
-          <div className="flex items-center gap-2">
-             <ShieldCheck className="w-4 h-4 text-green-600" />
-             <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Site Oficial • Seguro</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-red-50 px-2 py-1 rounded-full border border-red-100">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-            </span>
-            <span className="text-[10px] font-bold text-red-600 tabular-nums">{onlineUsers} pessoas analisando agora</span>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 container mx-auto px-4 py-4 md:py-8 flex flex-col items-center justify-start">
+      {/* Main Content Area - Centered Vertically */}
+      <main className="flex-1 w-full max-w-md mx-auto px-4 flex flex-col justify-center items-center pb-20 pt-4">
         
         {phase === 'intro' && (
-          <div className="max-w-lg w-full bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-white">
+          <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in border border-white">
             
             {/* Super Aggressive "Breaking News" Style Banner */}
-            <div className="bg-gradient-to-r from-red-600 to-rose-600 p-4 text-center shadow-lg relative overflow-hidden">
+            <div className="bg-gradient-to-r from-red-600 to-rose-600 p-3 text-center shadow-lg relative overflow-hidden">
                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
                <div className="relative z-10 flex flex-col items-center justify-center">
-                  <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider mb-1">
+                  <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider mb-1">
                     <AlertCircle className="w-3 h-3" />
                     Alerta Urgente
                   </span>
-                  <p className="text-white text-lg md:text-xl font-extrabold leading-tight tracking-tight drop-shadow-md">
+                  <p className="text-white text-lg font-extrabold leading-tight tracking-tight drop-shadow-md">
                     PARE DE FAZER DIETA.
                   </p>
                </div>
             </div>
 
-            <div className="p-6 md:p-8 text-center relative">
+            <div className="p-5 text-center relative">
               {/* Background accent */}
               <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-rose-50 to-transparent z-0"></div>
               
               <div className="relative z-10">
-                <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4 tracking-tight">
+                <h1 className="text-xl md:text-2xl font-black text-gray-900 leading-tight mb-3 tracking-tight">
                   Sua Barriga Não Diminui? <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-red-600">O Problema Não É Comida.</span>
                 </h1>
                 
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6 font-medium">
-                  Se você tem "pochete", estômago alto ou pele flácida, pare de se culpar. 
-                  Você provavelmente sofre de um <span className="bg-yellow-100 px-1 font-bold text-gray-900">Bloqueio Oculto do Colágeno</span> que impede a queima de gordura.
+                <p className="text-gray-600 text-xs md:text-sm leading-relaxed mb-5 font-medium">
+                  Se você tem "pochete" ou pele flácida, pare de se culpar. 
+                  Você provavelmente sofre de um <span className="bg-yellow-100 px-1 font-bold text-gray-900">Bloqueio Oculto do Colágeno</span>.
                 </p>
 
-                {/* "The Gap" - Problem vs Solution Visual */}
-                <div className="bg-gray-50 rounded-2xl p-5 mb-8 text-left border border-gray-200 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3 text-center">O Que Você Precisa Saber</h3>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-                      <div className="bg-red-100 rounded-full p-2 shrink-0">
-                        <Ban className="w-4 h-4 text-red-600" />
-                      </div>
-                      <div>
-                        <span className="block text-gray-900 font-bold text-sm">Não é Excesso de Calorias</span>
-                        <span className="text-xs text-gray-500">Dietas restritivas podem piorar o bloqueio.</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm border-l-4 border-l-green-500">
-                      <div className="bg-green-100 rounded-full p-2 shrink-0">
-                        <Activity className="w-4 h-4 text-green-600" />
-                      </div>
-                       <div>
-                        <span className="block text-gray-900 font-bold text-sm">Ative o "Interruptor" Natural</span>
-                        <span className="text-xs text-gray-500">Descubra como a gelatina correta reverte isso.</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Pulsing CTA Button */}
-                <div className="relative group mb-4">
+                <div className="relative group mb-2">
                   <button 
                     onClick={handleStart}
-                    className="animate-heartbeat relative w-full bg-gradient-to-b from-[#2e2a78] to-[#1e1b58] text-white font-black text-lg md:text-xl py-5 px-6 rounded-xl shadow-[0_10px_30px_rgba(46,42,120,0.4)] flex items-center justify-center gap-2 transition-all hover:brightness-110"
+                    className="animate-heartbeat relative w-full bg-gradient-to-b from-[#2e2a78] to-[#1e1b58] text-white font-black text-lg py-4 px-6 rounded-xl shadow-[0_10px_30px_rgba(46,42,120,0.4)] flex items-center justify-center gap-2 transition-all hover:brightness-110"
                   >
                     <span>DESCOBRIR MEU BLOQUEIO</span>
-                    <ChevronRight className="w-6 h-6 stroke-[3]" />
+                    <ChevronRight className="w-5 h-5 stroke-[3]" />
                   </button>
-                  <p className="text-[10px] text-gray-400 mt-3 flex items-center justify-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    Análise confidencial. Seus dados não serão compartilhados.
-                  </p>
                 </div>
 
-                {/* Scarcity Footer */}
-                <div className="border-t border-gray-100 pt-4 flex items-center justify-center gap-2 opacity-80">
-                  <Eye className="w-4 h-4 text-gray-400" />
-                  <span className="text-xs text-gray-500 font-medium">Esta ferramenta será removida do ar em breve.</span>
+                <div className="mt-4 flex items-center justify-center gap-2 opacity-80">
+                  <Eye className="w-3 h-3 text-gray-400" />
+                  <span className="text-[10px] text-gray-500 font-medium">Esta ferramenta sairá do ar em breve.</span>
                 </div>
 
               </div>
-            </div>
-            
-            {/* Progress Bar Visual (Fake start) */}
-            <div className="bg-gray-100 h-1.5 w-full">
-               <div className="bg-gradient-to-r from-red-500 to-rose-500 h-1.5 w-[8%]"></div>
             </div>
           </div>
         )}
@@ -235,13 +182,32 @@ const App: React.FC = () => {
 
       </main>
 
-      {/* Footer */}
-      <footer className="mt-auto py-6 text-center text-gray-400 text-[10px] md:text-xs bg-transparent">
-        <div className="container mx-auto px-4">
-          <p className="mb-2">Este site não faz parte do site do Facebook ou Facebook Inc.</p>
-          <p>&copy; {new Date().getFullYear()} O Segredo da Gelatina. Todos os direitos reservados.</p>
+      {/* Footer Status Bar - Fixed at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-4 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div className="max-w-md mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-1.5">
+             <ShieldCheck className="w-4 h-4 text-green-600" />
+             <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-gray-800 uppercase leading-none">Site Seguro</span>
+                <span className="text-[8px] text-gray-400 leading-none">Dados Criptografados</span>
+             </div>
+          </div>
+          
+          <div className="flex items-center gap-1.5 bg-red-50 px-2 py-1 rounded-full border border-red-100">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+            </span>
+            <span className="text-[9px] font-bold text-red-600 tabular-nums">{onlineUsers} pessoas online</span>
+          </div>
         </div>
-      </footer>
+        
+        {/* Copyright in very small text below the status bar */}
+        <div className="text-center mt-2">
+            <p className="text-[8px] text-gray-300">&copy; {new Date().getFullYear()} O Segredo da Gelatina.</p>
+        </div>
+      </div>
+
     </div>
   );
 };

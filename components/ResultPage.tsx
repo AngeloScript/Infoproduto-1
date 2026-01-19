@@ -1,68 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { AnalysisResult } from '../types';
 import confetti from 'canvas-confetti';
-import { Clock, CheckCircle2, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Clock, Lock, ArrowRight, ShieldCheck, FileText, AlertTriangle } from 'lucide-react';
 
 interface ResultPageProps {
   result: AnalysisResult;
 }
 
 const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(600);
   const [meterWidth, setMeterWidth] = useState(0);
   const [checkoutUrl, setCheckoutUrl] = useState("https://pay.cakto.com.br/dmha2ta_727694");
 
-  // Trigger Confetti and Animations on Mount
   useEffect(() => {
-    // 1. Confetti Effect
+    // Confetti
     const duration = 3000;
     const end = Date.now() + duration;
-
     const frame = () => {
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#5e54e8', '#ff0000', '#00ff00']
-      });
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#5e54e8', '#ff0000', '#00ff00']
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
+      confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#5e54e8', '#ff0000', '#00ff00'] });
+      confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#5e54e8', '#ff0000', '#00ff00'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
     };
     frame();
     
-    // 2. Animate Meter
-    setTimeout(() => {
-        setMeterWidth(100);
-    }, 500);
+    setTimeout(() => setMeterWidth(100), 500);
 
-    // 3. Ensure UTMs are passed to Checkout (Critical for Tracking)
-    // This grabs the ?utm_source=... from your quiz URL and adds it to the checkout button
     const currentParams = window.location.search;
     if (currentParams) {
-        // Check if checkout URL already has params to decide between ? and &
-        const separator = checkoutUrl.includes('?') ? '&' : '?';
-        // Remove '?' from currentParams if using '&' or keep it if using '?' logic
-        // Simple append approach:
-        setCheckoutUrl(prev => `${prev}${currentParams}`);
+        setCheckoutUrl(prev => `${prev}${currentParams.includes('?') ? '&' : '?'}${currentParams.substring(1)}`);
     }
-
   }, []);
 
-  // Countdown Timer Logic
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0)), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -72,118 +42,116 @@ const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // Calculate generic age improvement for the visual
   const currentAge = result.metabolicAge || 45;
   const targetAge = Math.max(25, currentAge - 15);
 
   return (
-    <div className="w-full max-w-lg mx-auto pt-4 pb-12 px-4">
+    <div className="w-full max-w-md mx-auto pt-0 pb-2 px-1">
       
-      {/* Urgency Banner */}
-      <div className="bg-red-50 border border-red-100 rounded-xl p-3 mb-6 flex items-center justify-between text-red-700 shadow-sm animate-pulse-slow">
-        <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            <span className="text-sm font-semibold">Oferta expira em:</span>
-        </div>
-        <span className="font-mono font-bold text-lg">{formatTime(timeLeft)}</span>
+      {/* Compact Urgency Banner */}
+      <div className="bg-red-50 border border-red-100 rounded-lg p-1.5 mb-3 flex items-center justify-center gap-2 text-red-700 shadow-sm animate-pulse-slow">
+        <Clock className="w-3 h-3" />
+        <span className="text-[10px] font-bold uppercase tracking-wide">Acesso expira em: <span className="font-mono text-xs ml-1">{formatTime(timeLeft)}</span></span>
       </div>
 
-      <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         
-        <div className="p-8 md:p-10 flex flex-col items-center text-center relative">
-            {/* Background pattern */}
-            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#f0f0ff] to-white z-0"></div>
+        <div className="p-4 flex flex-col items-center text-center relative">
+            <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-rose-50 to-white z-0"></div>
 
-            <div className="relative z-10">
-                <div className="text-6xl mb-4 animate-bounce">
-                🎉
-                </div>
+            <div className="relative z-10 w-full">
+                <div className="text-3xl mb-1 animate-bounce">🎉</div>
 
-                <h1 className="text-3xl md:text-4xl font-extrabold text-[#2e2a78] mb-2">
-                Plano Pronto!
+                <h1 className="text-xl font-black text-[#2e2a78] leading-tight mb-1">
+                  Análise Concluída
                 </h1>
-                
-                <p className="text-gray-500 text-sm mb-6 font-medium">
-                Seu protocolo personalizado foi gerado.
+                <p className="text-gray-500 text-[10px] font-medium mb-4">
+                  Encontramos o protocolo ideal para você.
                 </p>
 
-                {/* Animated Comparison Graph */}
-                <div className="w-full bg-gray-50 rounded-xl p-4 border border-gray-100 mb-6 text-left shadow-inner">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Sua Idade Metabólica</h3>
+                {/* Compact Graph */}
+                <div className="w-full bg-gray-50 rounded-lg p-3 border border-gray-100 mb-4 shadow-inner">
+                    <div className="flex justify-between items-end mb-2">
+                        <div className="text-left">
+                            <span className="text-[9px] text-gray-500 block">Metabolismo Atual</span>
+                            <span className="text-sm font-bold text-red-500 leading-none">{currentAge} anos</span>
+                        </div>
+                        <div className="text-right">
+                             <span className="text-[9px] text-gray-500 block">Potencial Ativado</span>
+                             <span className="text-sm font-bold text-green-600 leading-none">{targetAge} anos</span>
+                        </div>
+                    </div>
                     
-                    {/* Bar 1: Current */}
-                    <div className="mb-4">
-                        <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600 font-medium">Atual (Estimada)</span>
-                            <span className="text-red-500 font-bold">{currentAge} anos</span>
-                        </div>
-                        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                                className="h-full bg-red-400 rounded-full transition-all duration-1000 ease-out" 
-                                style={{ width: `${meterWidth > 0 ? '85%' : '0%'}` }}
-                            ></div>
-                        </div>
+                    <div className="relative h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="absolute top-0 left-0 h-full bg-red-400 w-[85%] rounded-full opacity-30"></div>
+                        <div 
+                            className="absolute top-0 left-0 h-full bg-green-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(34,197,94,0.5)]" 
+                            style={{ width: `${meterWidth > 0 ? '45%' : '0%'}` }}
+                        ></div>
                     </div>
+                </div>
 
-                    {/* Bar 2: Target */}
-                    <div>
-                        <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600 font-medium">Com o Truque da Gelatina</span>
-                            <span className="text-green-600 font-bold">{targetAge} anos</span>
+                {/* THE HOOK: Mystery/Locked Content - FOCADO NA DIETA */}
+                <div className="relative w-full bg-[#2e2a78] text-white rounded-xl p-4 mb-4 overflow-hidden text-left shadow-lg border border-[#1e1b58]">
+                    {/* Pattern Overlay */}
+                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,#fff_1px,transparent_0)] bg-[length:10px_10px]"></div>
+
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2 border-b border-white/20 pb-2">
+                            <FileText className="w-4 h-4 text-yellow-400" />
+                            <h3 className="font-bold text-xs tracking-wide text-yellow-400 uppercase">Sua Receita Personalizada</h3>
                         </div>
-                        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                                className="h-full bg-green-500 rounded-full transition-all duration-1000 delay-500 ease-out" 
-                                style={{ width: `${meterWidth > 0 ? '45%' : '0%'}` }}
-                            ></div>
+
+                        <p className="text-xs font-semibold mb-3 leading-snug">
+                           O algoritmo gerou a combinação exata de ingredientes para destravar seu metabolismo:
+                        </p>
+
+                        {/* Blurred Content Visual - VERY PERSUASIVE */}
+                        <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm border border-white/10 relative">
+                            {/* Fake text that looks like a recipe but blurred */}
+                            <div className="blur-[4px] opacity-70 select-none text-[10px] space-y-2 font-mono text-gray-200">
+                                <p>1. Ingrediente Principal: Gelatina Incolor Tipo B...</p>
+                                <p>2. Ativador Enzimático: [NOME DO ALIMENTO] (Essencial)</p>
+                                <p>3. Horário: Beber exatamente às 07:30h em jejum.</p>
+                                <p>4. Mistura: Adicionar 5 gotas de limão e...</p>
+                            </div>
+                            
+                            {/* Lock Overlay */}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#2e2a78]/70 rounded-lg backdrop-blur-[2px]">
+                                <div className="bg-white text-[#2e2a78] p-1.5 rounded-full mb-1 shadow-lg animate-pulse">
+                                    <Lock className="w-4 h-4" />
+                                </div>
+                                <span className="text-[9px] font-bold uppercase tracking-widest bg-black/60 px-2 py-0.5 rounded text-white shadow-sm border border-white/20">Receita Bloqueada</span>
+                            </div>
+                        </div>
+
+                        <div className="mt-3 flex gap-2 items-start">
+                             <AlertTriangle className="w-3 h-3 text-yellow-400 shrink-0 mt-0.5" />
+                             <p className="text-[9px] leading-tight text-gray-200">
+                                <span className="font-bold text-white">Importante:</span> A gelatina comum de mercado não funciona sem o <span className="underline decoration-yellow-400">Ativador Enzimático</span> listado acima.
+                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="space-y-3 text-gray-600 text-sm leading-relaxed mb-8 text-left bg-[#f8f9fc] p-4 rounded-xl">
-                    <p className="font-semibold text-[#2e2a78] mb-2 flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                        O que você vai receber:
-                    </p>
-                    <ul className="space-y-2">
-                        <li className="flex items-start gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#5e54e8] mt-1.5 shrink-0"></div>
-                            <span>Receita exata da gelatina termo-ativa.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#5e54e8] mt-1.5 shrink-0"></div>
-                            <span>Lista de compras econômica (supermercado comum).</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#5e54e8] mt-1.5 shrink-0"></div>
-                            <span>Cronograma de 7 dias para reativar o colágeno.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                {/* Botão de Ação (Com UTMs garantidas) */}
+                {/* CTA Button */}
                 <a
                   href={checkoutUrl}
-                  className="group relative w-full bg-[#2e2a78] hover:bg-[#242163] text-white font-bold text-lg py-4 px-6 rounded-xl shadow-[0_10px_20px_-5px_rgba(46,42,120,0.4)] transform transition hover:-translate-y-1 active:translate-y-0 active:scale-95 duration-200 overflow-hidden flex items-center justify-center decoration-none"
+                  className="group relative w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-black text-lg py-4 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(34,197,94,0.39)] transform transition hover:-translate-y-1 active:scale-95 duration-200 overflow-hidden flex items-center justify-center decoration-none mb-1"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                    <span className="flex items-center justify-center gap-2">
-                        BAIXAR MEU PLANO AGORA
+                    <div className="absolute top-0 left-0 w-full h-full bg-white/20 animate-stripes opacity-30"></div>
+                    <span className="relative z-10 flex items-center justify-center gap-2 uppercase tracking-tight text-sm md:text-base">
+                        Desbloquear Receita Agora
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </span>
                 </a>
                 
-                <div className="mt-4 flex items-center justify-center gap-1 text-xs text-gray-400">
-                    <ShieldCheck className="w-3 h-3" />
-                    <span>Compra Segura e Garantida</span>
-                </div>
+                <p className="text-[9px] text-gray-400 mt-2">
+                    Acesso imediato enviado para seu e-mail.
+                </p>
             </div>
         </div>
       </div>
-      
-      <p className="text-center mt-6 text-gray-400 text-xs px-8">
-        Ao clicar no botão acima, você concorda em receber o material digital imediatamente. Acesso vitalício.
-      </p>
     </div>
   );
 };
